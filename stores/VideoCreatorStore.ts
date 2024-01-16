@@ -41,7 +41,7 @@ class VideoCreatorStore {
     this.preview = preview;
 
     preview.onReady = async () => {
-      await preview.setSource(this.getDefaultSource());
+      await preview.loadTemplate(process.env.NEXT_PUBLIC_TEMPLATE_ID!);
     };
 
     preview.onLoad = async () => {

@@ -10,23 +10,46 @@ interface ImageSettingsProps {
   activeElement: ElementState;
 }
 
+const defaultImages = [
+  "https://unai-organization-dev.s3.amazonaws.com/svr/jeff.png",
+  "https://unai-organization-dev.s3.amazonaws.com/svr/ryan.png"
+]
+
+async function checkImage(url: string) {
+  const res = await fetch(url);
+  const buff = await res.blob();
+
+  return buff.type.startsWith('image/')
+}
+
 export const ImageSettings: React.FC<ImageSettingsProps> = (props) => {
+  const [images, setImages] = React.useState(defaultImages)
+  const handleNewFile = async (event: any) => {
+    event.preventDefault();
+    const newImageUrl = event.target['file-input-creatomate'].value;
+
+    const isValidImage = await checkImage(newImageUrl);
+    if (!isValidImage) {
+      // Error Handling...
+      return;
+    }
+
+    setImages([...images, newImageUrl]);
+    event.target.reset();
+  }
   return (
     <Fragment>
-      <ImagePreset
+      {images.map((imageUrl) => <ImagePreset
+        key={imageUrl}
         activeElement={props.activeElement}
-        url="https://creatomate-static.s3.amazonaws.com/video-creator-js/gradienta-ix_kUDzCczo-unsplash.jpg"
-      />
+        url={imageUrl}
+      />)}
 
-      <ImagePreset
-        activeElement={props.activeElement}
-        url="https://creatomate-static.s3.amazonaws.com/video-creator-js/mymind-mI-bnIqbeZ0-unsplash.jpg"
-      />
-
-      <ImagePreset
-        activeElement={props.activeElement}
-        url="https://creatomate-static.s3.amazonaws.com/video-creator-js/gradienta-rKv4HduvzIE-unsplash.jpg"
-      />
+      <form onSubmit={handleNewFile}>
+        {/* <label htmlFor="file-input-creatomate">Add File</label> */}
+        <input id="file-input-creatomate" required />
+        <button type="submit"> Add File</button>
+      </form>
 
       <PropertyCaption>Fit</PropertyCaption>
       <PropertySelect

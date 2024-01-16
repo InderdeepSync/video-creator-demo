@@ -34,7 +34,7 @@ export const Stage: React.FC = observer(() => {
           onClick={async () => {
             await videoCreator.createElement({
               type: 'image',
-              source: 'https://creatomate-static.s3.amazonaws.com/video-creator-js/gradienta-ix_kUDzCczo-unsplash.jpg',
+              source: 'https://unai-organization-dev.s3.amazonaws.com/svr/david.png',
             });
           }}
         >
@@ -46,7 +46,7 @@ export const Stage: React.FC = observer(() => {
           onClick={async () => {
             await videoCreator.createElement({
               type: 'video',
-              source: 'https://creatomate-static.s3.amazonaws.com/video-creator-js/pexels-2025634.mp4',
+              source: 'https://unai-organization-dev.s3.amazonaws.com/svr/David.mp4',
               loop: true,
             });
           }}

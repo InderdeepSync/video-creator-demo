@@ -10,23 +10,50 @@ interface VideoSettingsProps {
   activeElement: ElementState;
 }
 
+const defaultVideos = [
+  "https://unai-organization-dev.s3.amazonaws.com/svr/Jeff.mp4",
+  "https://unai-organization-dev.s3.amazonaws.com/svr/Ryan.mp4"
+];
+
+async function checkVideo(url: string) {
+  const res = await fetch(url);
+  const buff = await res.blob();
+
+  return buff.type.startsWith('video/')
+}
+
 export const VideoSettings: React.FC<VideoSettingsProps> = (props) => {
+  const [videos, setVideos] = React.useState(defaultVideos)
+
+  const handleNewFile = async (event: any) => {
+    event.preventDefault();
+    const newVideoUrl = event.target['file-input-creatomate'].value;
+
+    const isValidVideo = await checkVideo(newVideoUrl);
+    if (!isValidVideo) {
+      console.log("InvalidURL");
+      // Error Handling...
+      return;
+    }
+
+    setVideos([...videos, newVideoUrl]);
+    event.target.reset();
+  }
+
   return (
     <Fragment>
-      <VideoPreset
+      {videos.map(videoUrl => (<VideoPreset
+        key={videoUrl}
         activeElement={props.activeElement}
-        url="https://creatomate-static.s3.amazonaws.com/video-creator-js/pexels-2025634.mp4"
-      />
+        url={videoUrl}
+      />))}
 
-      <VideoPreset
-        activeElement={props.activeElement}
-        url="https://creatomate-static.s3.amazonaws.com/video-creator-js/pexels-3059865.mp4"
-      />
+      <form onSubmit={handleNewFile}>
+        {/* <label htmlFor="file-input-creatomate">Add File</label> */}
+        <input id="file-input-creatomate" required />
+        <button type="submit"> Add File</button>
+      </form>
 
-      <VideoPreset
-        activeElement={props.activeElement}
-        url="https://creatomate-static.s3.amazonaws.com/video-creator-js/pexels-4365140.mp4"
-      />
 
       <PropertyCaption>Fit</PropertyCaption>
       <PropertySelect
